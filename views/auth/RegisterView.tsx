@@ -17,6 +17,7 @@ import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import Image from "next/image";
 
 export const RegisterView = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -37,6 +38,12 @@ export const RegisterView = () => {
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
+        <Link href="/" className="mb-4 flex justify-center w-full">
+          <div className="flex items-center gap-2">
+            <Image src="/logo.png" alt="Logo" width={35} height={35} />
+            <span className="text-xl font-bold text-gray-800">BlogsApp</span>
+          </div>
+        </Link>
         <CardTitle>Create a new account</CardTitle>
         <CardDescription>
           Fill in the details to register your account

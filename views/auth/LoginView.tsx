@@ -13,10 +13,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { LoginFormValues, loginSchema } from "@/schema";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Loader, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import Image from "next/image";
 
 export const LoginView = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -36,6 +37,12 @@ export const LoginView = () => {
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
+        <Link href="/" className="mb-4 flex justify-center w-full">
+          <div className="flex items-center gap-2">
+            <Image src="/logo.png" alt="Logo" width={35} height={35} />
+            <span className="text-xl font-bold text-gray-800">BlogsApp</span>
+          </div>
+        </Link>
         <CardTitle>Login to your account</CardTitle>
         <CardDescription>
           Enter your email and password to login

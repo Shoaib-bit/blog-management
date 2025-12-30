@@ -1,7 +1,5 @@
+import { BlogsView } from "@/views/blogs";
+
 export default function Home() {
-  return (
-    <div>
-      <p className='text-blue-300'>Hello Blog App</p>
-    </div>
-  )
+  return <BlogsView />;
 }
