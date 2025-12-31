@@ -9,9 +9,9 @@ const USER_KEY = "user";
 export async function setAuthCookies(token: string, user: User) {
   const cookieStore = await cookies();
 
-  // Set access token cookie (httpOnly for security)
+  // Set access token cookie (accessible from client-side for API calls)
   cookieStore.set(ACCESS_TOKEN_KEY, token, {
-    httpOnly: true,
+    httpOnly: false,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     maxAge: 60 * 60 * 24 * 7, // 7 days

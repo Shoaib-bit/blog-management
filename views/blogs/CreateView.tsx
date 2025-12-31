@@ -2,14 +2,16 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-label";
-import { ArrowBigLeft } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { CreateBlogHeader } from "./components";
 import { TextEditor } from "@/components/TextEditor";
-import { Controller, Form, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { createBlogApi } from "./blog.utils";
+import { toast } from "sonner";
 
 const blogCreateSchema = yup.object().shape({
   title: yup.string().required("Title is required"),
@@ -22,6 +24,9 @@ const blogCreateSchema = yup.object().shape({
 type BlogCreateFormData = yup.InferType<typeof blogCreateSchema>;
 
 export const CreateView = () => {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
   const {
     register,
     control,
@@ -31,8 +36,22 @@ export const CreateView = () => {
     resolver: yupResolver(blogCreateSchema),
   });
 
-  const submitFormHandler = (data: BlogCreateFormData) => {
-    console.log("Form Data: ", data);
+  const submitFormHandler = async (data: BlogCreateFormData) => {
+    try {
+      setLoading(true);
+      const response = await createBlogApi({
+        title: data.title,
+        content: data.content,
+      });
+      toast.success(response.message || "Blog created successfully!");
+      router.push("/");
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -71,8 +90,18 @@ export const CreateView = () => {
           )}
         />
         <div className="flex justify-end">
-          <Button type="submit" className="self-start mt-4 cursor-pointer">
-            Create Blog
+          <Button
+            type="submit"
+            className="self-start mt-4 w-30 cursor-pointer"
+            disabled={loading}
+          >
+            {loading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              </>
+            ) : (
+              "Create Blog"
+            )}
           </Button>
         </div>
       </form>
