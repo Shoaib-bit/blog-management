@@ -1,9 +1,9 @@
-import Header from "./components/Header";
+import { BlogListHeader } from "./components";
 
 export const BlogsView = () => {
   return (
     <div>
-      <Header />
+      <BlogListHeader />
       <p>blogs List</p>
     </div>
   );

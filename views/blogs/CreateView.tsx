@@ -5,6 +5,7 @@ import { Label } from "@radix-ui/react-label";
 import { ArrowBigLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { CreateBlogHeader } from "./components";
 
 export const CreateView = () => {
   const router = useRouter();
@@ -12,12 +13,7 @@ export const CreateView = () => {
 
   return (
     <div>
-      <Button onClick={() => router.back()}>
-        <ArrowBigLeft />
-        Back
-      </Button>
-
-      <h3 className="mt-3 text-2xl font-blod">Create new blog</h3>
+      <CreateBlogHeader />
 
       <div className="mt-4 flex flex-col gap-3">
         <div className="grid gap-2">
