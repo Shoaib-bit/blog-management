@@ -61,7 +61,7 @@ export const TextEditor = ({
   });
 
   return (
-    <div className="bg-background relative rounded-lg border">
+    <div className="bg-background relative rounded-lg border flex flex-col max-h-130 h-130">
       {editor && (
         <>
           <ToolBar editor={editor} />
@@ -69,7 +69,9 @@ export const TextEditor = ({
           <FloatingMenu editor={editor} />
         </>
       )}
-      <EditorContent editor={editor} className="min-h-75 px-4 py-3" />
+      <div className="overflow-y-auto flex-1">
+        <EditorContent editor={editor} className="min-h-75 px-4 py-3" />
+      </div>
     </div>
   );
 };
