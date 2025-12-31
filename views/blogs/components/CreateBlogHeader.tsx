@@ -2,14 +2,24 @@
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
-export const CreateBlogHeader = () => {
+interface CreateBlogHeaderProps {
+  isEditMode?: boolean;
+}
+
+export const CreateBlogHeader = ({
+  isEditMode = false,
+}: CreateBlogHeaderProps) => {
   const router = useRouter();
   return (
     <div className="flex items-center justify-between mb-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-800">Create Blog</h2>
+        <h2 className="text-2xl font-bold text-gray-800">
+          {isEditMode ? "Edit Blog" : "Create Blog"}
+        </h2>
         <p className="text-sm text-gray-500">
-          Share your thoughts and ideas with the world
+          {isEditMode
+            ? "Update your blog post"
+            : "Share your thoughts and ideas with the world"}
         </p>
       </div>
 

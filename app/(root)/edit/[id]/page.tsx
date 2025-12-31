@@ -2,14 +2,20 @@ import { CreateView } from "@/views/blogs/CreateView";
 import { getAuthToken } from "@/lib/auth-cookies";
 import { redirect } from "next/navigation";
 
-const page = async () => {
+interface EditPageProps {
+  params: Promise<{ id: string }>;
+}
+
+const EditPage = async ({ params }: EditPageProps) => {
   const token = await getAuthToken();
 
   if (!token) {
     redirect("/login");
   }
 
-  return <CreateView />;
+  const { id } = await params;
+
+  return <CreateView blogId={id} />;
 };
 
-export default page;
+export default EditPage;

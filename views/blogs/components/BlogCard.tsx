@@ -20,6 +20,7 @@ import { useAuth } from "@/context/AuthContext";
 import { deleteBlogApi } from "../blog.utils";
 import { toast } from "sonner";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface BlogCardProps {
   blog: Blog;
@@ -28,14 +29,14 @@ interface BlogCardProps {
 
 export const BlogCard = ({ blog, onDelete }: BlogCardProps) => {
   const { user } = useAuth();
+  const router = useRouter();
   const isAuthor = user?.id === blog.author.id;
   const [isDeleting, setIsDeleting] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleEdit = () => {
-    // TODO: Implement edit functionality
-    console.log("Edit blog:", blog.id);
+    router.push(`/edit/${blog.id}`);
   };
 
   const handleDeleteClick = () => {

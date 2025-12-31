@@ -35,6 +35,21 @@ export interface DeleteBlogResponse {
   message: string;
 }
 
+export interface GetBlogByIdResponse {
+  data: Blog;
+  message: string;
+}
+
+export interface UpdateBlogRequest {
+  title: string;
+  content: string;
+}
+
+export interface UpdateBlogResponse {
+  data: Blog;
+  message: string;
+}
+
 export const getBlogsApi = async (
   params: BlogRequest
 ): Promise<BlogResponse> => {
@@ -79,5 +94,40 @@ export const deleteBlogApi = async (
       throw APIError.fromAxiosError(error, "Failed to delete blog");
     }
     throw new APIError("An unexpected error occurred while deleting blog");
+  }
+};
+
+export const getBlogByIdApi = async (
+  blogId: string
+): Promise<GetBlogByIdResponse> => {
+  try {
+    const response = await http.get<GetBlogByIdResponse>(`/posts/${blogId}`);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw APIError.fromAxiosError(error, "Failed to fetch blog");
+    }
+    throw new APIError("An unexpected error occurred while fetching blog");
+  }
+};
+
+export const updateBlogApi = async (
+  blogId: string,
+  blogData: UpdateBlogRequest
+): Promise<UpdateBlogResponse> => {
+  try {
+    if (!blogData.title || !blogData.content) {
+      throw new APIError("Title and content are required to update a blog");
+    }
+    const response = await http.put<UpdateBlogResponse>(
+      `/posts/${blogId}`,
+      blogData
+    );
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw APIError.fromAxiosError(error, "Failed to update blog");
+    }
+    throw new APIError("An unexpected error occurred while updating blog");
   }
 };
