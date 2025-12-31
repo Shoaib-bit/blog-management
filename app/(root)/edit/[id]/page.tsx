@@ -7,12 +7,6 @@ interface EditPageProps {
 }
 
 const EditPage = async ({ params }: EditPageProps) => {
-  const token = await getAuthToken();
-
-  if (!token) {
-    redirect("/login");
-  }
-
   const { id } = await params;
 
   return <CreateView blogId={id} />;
