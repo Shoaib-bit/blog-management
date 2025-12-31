@@ -46,13 +46,12 @@ export const TextEditor = ({
   onChange?: (content: string) => void;
 }) => {
   const editor = useEditor({
-    extensions: [StarterKit, Highlight.configure({ multicolor: true })], 
+    extensions: [StarterKit, Highlight.configure({ multicolor: true })],
     editorProps: {
       attributes: {
         class:
           "prose dark:prose-invert prose-sm sm:prose-base focus:outline-none max-w-none",
       },
-      
     },
     content,
     onUpdate: ({ editor }) => {
@@ -74,7 +73,6 @@ export const TextEditor = ({
     </div>
   );
 };
-
 
 function LinkComponent({
   editor,
@@ -103,7 +101,7 @@ function LinkComponent({
 
   return (
     <Popover open={isLinkPopoverOpen} onOpenChange={setIsLinkPopoverOpen}>
-      <PopoverTrigger>{children}</PopoverTrigger>
+      <PopoverTrigger asChild>{children}</PopoverTrigger>
       {/* // this is the main */}
       {/* trigger point */}
       <PopoverContent className="w-80 p-4">
