@@ -18,6 +18,9 @@ import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
+import { loginApi } from "./auth.utils";
+import { toast } from "sonner";
+import axios from "axios";
 
 export const LoginView = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -29,9 +32,20 @@ export const LoginView = () => {
     resolver: yupResolver(loginSchema),
   });
 
-  const onSubmitHandler = (data: LoginFormValues) => {
-    console.log(data);
-    // TODO: call your login API here
+  const onSubmitHandler = async (data: LoginFormValues) => {
+    try {
+      setIsLoading(true);
+      const res = await loginApi(data);
+      console.log("Login successful:", res);
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(
+          error?.message ? error.message : "Login failed. Please try again."
+        );
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

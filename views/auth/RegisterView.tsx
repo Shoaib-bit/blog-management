@@ -18,9 +18,13 @@ import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
+import { toast } from "sonner";
+import { registerApi } from "./auth.utils";
+import { useRouter } from "next/navigation";
 
 export const RegisterView = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter()
 
   const {
     register,
@@ -30,9 +34,21 @@ export const RegisterView = () => {
     resolver: yupResolver(registerSchema),
   });
 
-  const onSubmitHandler = (data: RegisterFormValues) => {
-    console.log(data);
-    // TODO: call your register API here
+  const onSubmitHandler = async(data: RegisterFormValues) => {
+    try {
+      setIsLoading(true);
+      await registerApi(data);
+      toast.success("Registration successful! You can now log in.");
+      router.push('/login')
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(
+          error?.message ? error.message : "Registration failed. Please try again."
+        );
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
