@@ -21,9 +21,15 @@ import Image from "next/image";
 import { loginApi } from "./auth.utils";
 import { toast } from "sonner";
 import axios from "axios";
+import { setAuthCookies } from "@/lib/auth-cookies";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 export const LoginView = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const { setAuthState } = useAuth();
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -36,7 +42,19 @@ export const LoginView = () => {
     try {
       setIsLoading(true);
       const res = await loginApi(data);
-      console.log("Login successful:", res);
+
+      if (res.data?.token && res.data?.user) {
+        // Set cookies using server action
+        await setAuthCookies(res.data.token, res.data.user);
+
+        // Update client-side auth state
+        setAuthState(res.data.user);
+
+        toast.success("Login successful!");
+        router.push("/");
+      } else {
+        toast.error("Invalid response from server");
+      }
     } catch (error) {
       if (error instanceof Error) {
         toast.error(
