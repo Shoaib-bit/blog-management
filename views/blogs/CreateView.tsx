@@ -124,10 +124,10 @@ export const CreateView = ({ blogId }: CreateViewProps) => {
             render={({ field, fieldState }) => (
               <div className="flex flex-col gap-2">
                 <Label htmlFor="content">Content</Label>
-                <TextEditor 
-                  key={blogId || 'new'} 
-                  content={field.value} 
-                  onChange={field.onChange} 
+                <TextEditor
+                  key={blogId || "new"}
+                  content={field.value}
+                  onChange={field.onChange}
                 />
                 {fieldState.error && (
                   <p className="text-sm text-red-600">

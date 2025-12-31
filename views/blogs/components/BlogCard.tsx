@@ -39,6 +39,10 @@ export const BlogCard = ({ blog, onDelete }: BlogCardProps) => {
     router.push(`/edit/${blog.id}`);
   };
 
+  const handleViewDetail = () => {
+    router.push(`/blog/${blog.id}`);
+  };
+
   const handleDeleteClick = () => {
     setIsPopoverOpen(false);
     setIsDialogOpen(true);
@@ -61,7 +65,10 @@ export const BlogCard = ({ blog, onDelete }: BlogCardProps) => {
   };
 
   return (
-    <Card className="mb-4 transition-all duration-200 cursor-pointer hover:border-primary relative">
+    <Card
+      className="mb-4 transition-all duration-200 cursor-pointer hover:border-primary relative"
+      onClick={handleViewDetail}
+    >
       <CardHeader>
         <div className="flex items-start justify-between">
           <CardTitle className="text-4xl">{blog.title}</CardTitle>
