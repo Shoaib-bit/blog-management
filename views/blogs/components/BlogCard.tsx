@@ -17,10 +17,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { MoreVertical, Edit, Trash2, Loader2 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
-import { deleteBlogApi } from "../blog.utils";
 import { toast } from "sonner";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useDeleteBlog } from "@/hooks/useDeleteBlog";
 
 interface BlogCardProps {
   blog: Blog;
@@ -31,9 +31,9 @@ export const BlogCard = ({ blog, onDelete }: BlogCardProps) => {
   const { user } = useAuth();
   const router = useRouter();
   const isAuthor = user?.id === blog.author.id;
-  const [isDeleting, setIsDeleting] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { mutate: deleteBlog, isPending: isDeleting } = useDeleteBlog();
 
   const handleEdit = () => {
     router.push(`/edit/${blog.id}`);
@@ -48,20 +48,17 @@ export const BlogCard = ({ blog, onDelete }: BlogCardProps) => {
     setIsDialogOpen(true);
   };
 
-  const handleConfirmDelete = async () => {
-    try {
-      setIsDeleting(true);
-      await deleteBlogApi(blog.id);
-      toast.success("Blog deleted successfully");
-      setIsDialogOpen(false);
-      onDelete?.(blog.id);
-    } catch (error) {
-      if (error instanceof Error) {
+  const handleConfirmDelete = () => {
+    deleteBlog(blog.id, {
+      onSuccess: () => {
+        toast.success("Blog deleted successfully");
+        setIsDialogOpen(false);
+        onDelete?.(blog.id);
+      },
+      onError: (error) => {
         toast.error(error.message);
-      }
-    } finally {
-      setIsDeleting(false);
-    }
+      },
+    });
   };
 
   return (
@@ -137,7 +134,7 @@ export const BlogCard = ({ blog, onDelete }: BlogCardProps) => {
       </CardContent>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent>
+        <DialogContent onClick={(e) => e.stopPropagation()}>
           <DialogHeader>
             <DialogTitle>Delete Blog</DialogTitle>
             <DialogDescription>

@@ -4,14 +4,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-label";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { CreateBlogHeader } from "./components";
 import { TextEditor } from "@/components/TextEditor";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { createBlogApi, getBlogByIdApi, updateBlogApi } from "./blog.utils";
 import { toast } from "sonner";
+import { useAddBlog } from "@/hooks/useAddBlog";
+import { useUpdateBlog } from "@/hooks/useUpdateBlog";
+import { useGetBlogById } from "@/hooks/useGetBlog";
 
 const blogCreateSchema = yup.object().shape({
   title: yup.string().required("Title is required"),
@@ -29,9 +31,16 @@ interface CreateViewProps {
 
 export const CreateView = ({ blogId }: CreateViewProps) => {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [fetchingBlog, setFetchingBlog] = useState(false);
   const isEditMode = !!blogId;
+
+  const { data: blogData, isLoading: fetchingBlog } = useGetBlogById(
+    blogId || "",
+    isEditMode
+  );
+  const { mutate: createBlog, isPending: isCreating } = useAddBlog();
+  const { mutate: updateBlog, isPending: isUpdating } = useUpdateBlog();
+
+  const loading = isCreating || isUpdating;
 
   const {
     register,
@@ -44,52 +53,38 @@ export const CreateView = ({ blogId }: CreateViewProps) => {
   });
 
   useEffect(() => {
-    const fetchBlog = async () => {
-      if (!blogId) return;
+    if (blogData?.data) {
+      reset({
+        title: blogData.data.title,
+        content: blogData.data.content,
+      });
+    }
+  }, [blogData, reset]);
 
-      try {
-        setFetchingBlog(true);
-        const response = await getBlogByIdApi(blogId);
-        reset({
-          title: response.data.title,
-          content: response.data.content,
-        });
-      } catch (error) {
-        if (error instanceof Error) {
-          toast.error(error.message);
+  const submitFormHandler = (data: BlogCreateFormData) => {
+    if (isEditMode && blogId) {
+      updateBlog(
+        { blogId, blogData: data },
+        {
+          onSuccess: (response) => {
+            toast.success(response.message || "Blog updated successfully!");
+            router.push("/");
+          },
+          onError: (error) => {
+            toast.error(error.message);
+          },
         }
-        router.push("/");
-      } finally {
-        setFetchingBlog(false);
-      }
-    };
-
-    fetchBlog();
-  }, [blogId, reset, router]);
-
-  const submitFormHandler = async (data: BlogCreateFormData) => {
-    try {
-      setLoading(true);
-      if (isEditMode && blogId) {
-        const response = await updateBlogApi(blogId, {
-          title: data.title,
-          content: data.content,
-        });
-        toast.success(response.message || "Blog updated successfully!");
-      } else {
-        const response = await createBlogApi({
-          title: data.title,
-          content: data.content,
-        });
-        toast.success(response.message || "Blog created successfully!");
-      }
-      router.push("/");
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message);
-      }
-    } finally {
-      setLoading(false);
+      );
+    } else {
+      createBlog(data, {
+        onSuccess: (response) => {
+          toast.success(response.message || "Blog created successfully!");
+          router.push("/");
+        },
+        onError: (error) => {
+          toast.error(error.message);
+        },
+      });
     }
   };
 

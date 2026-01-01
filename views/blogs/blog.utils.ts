@@ -4,7 +4,7 @@ import { Blog, User } from "@/types/types";
 import axios from "axios";
 
 export interface BlogRequest {
-  search?: string;
+  query?: string;
   page?: number;
   limit?: number;
 }
