@@ -12,18 +12,18 @@ export const Header = () => {
 
   return (
     <header className="w-full bg-white border-b ">
-      <div className="w-full max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div className="w-full max-w-7xl mx-auto px-6 py-4 flex items-center gap-4 justify-between  max-sm:flex-col  max-sm:items-start">
         <div className="flex items-center gap-2">
           <Image src="/logo.png" alt="Logo" width={35} height={35} />
           <span className="text-xl font-bold text-gray-800">BlogsApp</span>
         </div>
         {user ? (
-          <div className="flex items-center gap-4">
-            <span className="text-gray-600">Welcome, {user.name}</span>
+          <div className="flex items-center gap-4 max-sm:flex-col max-sm:items-start">
+            <p className="text-gray-600">Welcome, {user.name}</p>
             <Button
               className="cursor-pointer"
-              onClick={async() => {
-                await logoutAction()
+              onClick={async () => {
+                await logoutAction();
                 clearAuthState();
                 router.push("/login");
               }}
@@ -32,7 +32,7 @@ export const Header = () => {
             </Button>
           </div>
         ) : (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2  max-sm:flex-col max-sm:items-start">
             <Link href="/login">
               <Button className="cursor-pointer" variant="outline">
                 Login
