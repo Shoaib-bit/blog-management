@@ -23,8 +23,8 @@ export const Header = () => {
             <Button
               className="cursor-pointer"
               onClick={async () => {
-                await logoutAction();
                 clearAuthState();
+                await logoutAction();
                 router.push("/login");
               }}
             >
