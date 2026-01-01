@@ -27,7 +27,7 @@ import {
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { ReactNode, useState } from "react";
+import { ReactNode, useState, useEffect } from "react";
 import {
   Select,
   SelectContent,
@@ -59,6 +59,13 @@ export const TextEditor = ({
     },
     immediatelyRender: false,
   });
+
+  // Update editor content when content prop changes
+  useEffect(() => {
+    if (editor && content !== undefined && content !== editor.getHTML()) {
+      editor.commands.setContent(content);
+    }
+  }, [content, editor]);
 
   return (
     <div className="bg-background relative rounded-lg border flex flex-col max-h-130 h-130">
